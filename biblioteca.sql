@@ -47,8 +47,9 @@ CREATE TABLE members_books(
 
 CREATE TABLE books_authors(
     id SERIAL PRIMARY KEY,
-    books_isbn VARCHAR (13) REFERENCES books(isbn),
-    authors_id INT REFERENCES authors(id)
+    books_isbn VARCHAR (15) REFERENCES books(isbn),
+    authors_id INT REFERENCES authors(id),
+    type_of_author VARCHAR (10)
 );
 
 --cargar registros en tablas
