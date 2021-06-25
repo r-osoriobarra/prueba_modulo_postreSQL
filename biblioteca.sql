@@ -1,12 +1,18 @@
 --Prueba - Biblioteca
 DROP DATABASE biblioteca;
+
+--Parte 2
+
+--1. Crear el modelo en una base de datos llamada biblioteca, considerando las tablas
+--definidas y sus atributos.
+
 --Crear la base de datos
 CREATE DATABASE biblioteca;
 
 --Conectarse a la base de datos
 \c biblioteca
 
--- Crear entidades del modelo
+--Crear entidades del modelo
 
 CREATE TABLE addresses(
     id SERIAL PRIMARY KEY,
@@ -52,12 +58,39 @@ CREATE TABLE books_authors(
     type_of_author VARCHAR (10)
 );
 
---cargar registros en tablas
+
+--2. Se deben insertar los registros en las tablas correspondientes
 \copy addresses FROM 'csv/addresses.csv' CSV HEADER;
 \copy members FROM 'csv/members.csv' CSV HEADER;
 \copy books FROM 'csv/books.csv' CSV HEADER;
 \copy authors FROM 'csv/authors.csv' WITH NULL AS 'null' CSV HEADER ;
 \copy members_books FROM 'csv/members_books.csv' CSV HEADER;
 \copy books_authors FROM 'csv/books_authors.csv' CSV HEADER;
+
+--3. Realizar las siguientes consultas:
+
+--a. Mostrar todos los libros que posean menos de 300 páginas.
+SELECT title, number_of_pages FROM books WHERE number_of_pages < 300;
+
+--b. Mostrar todos los autores que hayan nacido después del 01-01-1970
+SELECT first_name, last_name, year_of_birth FROM authors
+WHERE year_of_birth > 1970;
+
+--c. ¿Cuál es el libro más solicitado?
+SELECT b.title, COUNT(*) AS modal FROM members_books
+INNER JOIN books AS b ON isbn = books_isbn
+GROUP BY b.title
+ORDER BY modal DESC
+LIMIT 1;
+
+--d. Si se cobrara una multa de $100 por cada día de atraso, mostrar cuánto
+--debería pagar cada usuario que entregue el préstamo después de 7 días.
+
+--REFORMULACIÓN: Mostrar cuánto deberían pagar cada usuario que entregue el
+--préstamo después de la fecha esperada de devolución
+
+
+
+
 
 
