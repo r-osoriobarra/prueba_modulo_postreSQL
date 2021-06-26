@@ -1,5 +1,4 @@
 --Prueba - Biblioteca
-DROP DATABASE biblioteca;
 
 --Parte 2
 
