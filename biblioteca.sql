@@ -86,11 +86,17 @@ LIMIT 1;
 --d. Si se cobrara una multa de $100 por cada día de atraso, mostrar cuánto
 --debería pagar cada usuario que entregue el préstamo después de 7 días.
 
---REFORMULACIÓN: Mostrar cuánto deberían pagar cada usuario que entregue el
---préstamo después de la fecha esperada de devolución
+--REFORMULACIÓN: Si se cobrara una multa de $100 por cada día de atraso, 
+--mostrar cuánto deberían pagar cada usuario que entregue el
+--préstamo después de la fecha esperada de devolución.
 
-
-
-
+SELECT m.first_name AS member,
+days_late, days_late*100 as fine
+FROM (SELECT members_rut,
+    SUM(real_return_date::date - expected_return_date::date) AS days_late
+    FROM members_books WHERE real_return_date > expected_return_date 
+    GROUP BY members_rut,real_return_date,expected_return_date) AS delays
+INNER JOIN members AS m ON rut = members_rut
+ORDER BY days_late DESC;
 
 
