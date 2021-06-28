@@ -1,5 +1,4 @@
 --Prueba - Biblioteca
-
 --Parte 2
 
 --1. Crear el modelo en una base de datos llamada biblioteca, considerando las tablas
@@ -23,14 +22,17 @@ CREATE TABLE members(
     rut VARCHAR (10) PRIMARY KEY,
     first_name VARCHAR (15),
     last_name VARCHAR (20),
-    addresses_id INT REFERENCES addresses(id),
-    phone_number INT
+    addresses_id INT UNIQUE REFERENCES addresses(id),
+    phone_number INT UNIQUE,
+    active_loan BOOLEAN DEFAULT 'f' CHECK (active_loan = 'f')
 );
 
 CREATE TABLE books(
     isbn VARCHAR (15) PRIMARY KEY,
     title VARCHAR (30),
-    number_of_pages INT
+    number_of_pages INT,
+    stock SMALLINT DEFAULT 1 CHECK (stock >= 0 AND stock <= 1),
+    n_ppal_authors SMALLINT DEFAULT 1 CHECK (n_ppal_authors = 1)
 );
 
 CREATE TABLE authors(
@@ -43,17 +45,17 @@ CREATE TABLE authors(
 
 CREATE TABLE members_books(
     id SERIAL PRIMARY KEY,
-    members_rut VARCHAR (10) REFERENCES members(rut),
-    books_isbn VARCHAR (15) REFERENCES books(isbn),
+    members_rut VARCHAR (10) NOT NULL REFERENCES members(rut),
+    books_isbn VARCHAR (15) NOT NULL REFERENCES books(isbn),
     starting_date DATE NOT NULL,
     expected_return_date DATE NOT NULL,
-    real_return_date DATE NOT NULL
+    real_return_date DATE
 );
 
 CREATE TABLE books_authors(
     id SERIAL PRIMARY KEY,
-    books_isbn VARCHAR (15) REFERENCES books(isbn),
-    authors_id INT REFERENCES authors(id),
+    books_isbn VARCHAR (15) NOT NULL REFERENCES books(isbn),
+    authors_id INT NOT NULL REFERENCES authors(id),
     type_of_author VARCHAR (10)
 );
 
@@ -62,7 +64,7 @@ CREATE TABLE books_authors(
 \copy addresses FROM 'csv/addresses.csv' CSV HEADER;
 \copy members FROM 'csv/members.csv' CSV HEADER;
 \copy books FROM 'csv/books.csv' CSV HEADER;
-\copy authors FROM 'csv/authors.csv' WITH NULL AS 'null' CSV HEADER ;
+\copy authors FROM 'csv/authors.csv' WITH NULL AS 'null' CSV HEADER;
 \copy members_books FROM 'csv/members_books.csv' CSV HEADER;
 \copy books_authors FROM 'csv/books_authors.csv' CSV HEADER;
 
